@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>OwnFM Beta!</title>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+	var authData = <%- JSON.stringify(authData) %>;
+console.log(authData);
+	ref = new Firebase("https://burning-torch-3334.firebaseio.com/tweets/"+authData.uid);
+
+ref.auth(authData.token);
+
+ref.on("child_added", function(snapshot, prevChildKey) {
+	 var tweets = snapshot.val();
+console.log (prevChildKey);
+	  $("#tweets").prepend('<p><iframe src="https://embed.spotify.com/?uri=spotify:track:'+tweets.track+'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe><br/><br/><a href="/offer/add?uid='+authData.uid+'&track='+tweets.track+'&key='+snapshot.key()+'"><button>İzin Ver</button></a><a href="/offer/delete?uid='+authData.uid+'&track='+tweets.track+'&key='+snapshot.key()+'"> <button>Oneriyi Sil</button></a> </p>');
+	  
+	});
+
+
+
+	
+
+</script>
+
+  </head>
+
+<body>
+
+
+	<div id ="topMenu">
+
+	<%if (!spotifyToken) { %>
+	  	<a href="/spotifyLogin">Spotify Login</a> | 
+	<% }else{ %> 
+
+	Spotify  Hesabı Tanımlandı | 
+
+	<% } %> 
+
+	<%if (!twitterToken) { %>
+		<a href="/twitterLogin">Twitter Login</a> |
+	<% }else{ %> 
+
+	Twitter Hesabı Tanımlandı |
+ 
+	<% } %> 
+
+	<a href="/logout"> Çıkış Yap </a>
+
+
+	</div>
+
+	<hr/>
+
+	<div id="tweets">
+
+	</div>
+
+
+</body>
+
+</html>
