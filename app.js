@@ -66,6 +66,7 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 app.use(cookieParser());
 app.engine('html', require('ejs').renderFile);
+app.use(express.static(__dirname + '/views'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -140,7 +141,7 @@ spotifyApi.getMe()
           
           DbProccess.addSpotifyInf(ref.getAuth().uid,data.body.id,data2.body.id);
 
-          res.redirect('/');
+          res.redirect('/dashboard');
 
       });
   
@@ -163,7 +164,14 @@ spotifyApi.getMe()
 
 });
 
+
 app.get('/',function(req,res){
+
+  res.render('base.ejs');
+
+});
+
+app.get('/dashboard',function(req,res){
 
   if(req.cookies.authData){
 
@@ -217,7 +225,7 @@ app.get('/offer/add',function(req,res){
     if(d == 'hata'){
       res.redirect('/spotifyLogin');
     }else{
-      res.redirect('/');
+      res.redirect('/dashboard');
     }
   });
 
@@ -249,7 +257,7 @@ ref.unauth();
 
 
 
-  res.redirect('/');
+  res.redirect('/dashboard');
 
   } else {
   res.redirect('/login');
@@ -282,7 +290,7 @@ app.post('/login',function(req,res){
 
     res.cookie('authData', JSON.stringify(authData));
 
-      res.redirect('/');
+      res.redirect('/dashboard');
   }  
   });
 
@@ -327,7 +335,7 @@ app.get('/twitter/callback', function (req, res) {
           console.log(error);
       } else {
               DbProccess.addTtoken(ref.getAuth().uid,accessToken,accessTokenSecret);
-              res.redirect('/');
+              res.redirect('/dashboard');
       }
   });
 } else {
